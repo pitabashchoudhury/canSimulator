@@ -1,9 +1,6 @@
 package com.tata.cansimulator.di
 
-
 import android.content.Context
-import com.tata.cansimulator.data.repository.CarRepositoryImpl
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,4 +15,3 @@ object AppModule {
     @Singleton
     fun provideContext(@ApplicationContext app: Context): Context = app
 }
-
