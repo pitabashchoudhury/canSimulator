@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,88 +28,109 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.tata.cansimulator.navigation.Destinations
 import com.tata.cansimulator.navigation.LocalNavController
-import com.tata.cansimulator.ui.home.model.CarStatus
+import com.tata.cansimulator.ui.home.state.HomeUiState
 
 @Composable
 fun HomeScreen() {
     val navController = LocalNavController.current;
     val homeVM = hiltViewModel<HomeViewModel>()
-    val carData: CarStatus = homeVM.text.collectAsState().value;
+    val homeUiState: HomeUiState = homeVM.homeUiState.collectAsState().value;
 
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(top = 50.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
 
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp)
-                .background(Color.Transparent)
-                .padding(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Text(
-                    text = "Car Dashboard",
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-            item {
-                DashboardCard(
-                    title = "Fuel Level",
-                    value = "${carData.fuelLevel.toString()} %",
-                    onClick = {
-                        navController.navigate(Destinations.DETAIL)
-                    })
-            }
-            item {
-                DashboardCard(
-                    title = "Speed",
-                    value = "${carData.speed.toString()} km/h",
-                    onClick = {
-                        navController.navigate(Destinations.DETAIL)
-                    })
-            }
-            item {
-                DashboardCard(
-                    title = "Engine Temp",
-                    value = "${carData.temperature.toString()} °C",
-                    onClick = {
+    when (homeUiState) {
 
-                        navController.navigate(Destinations.DETAIL)
-                    })
-            }
-            item {
-                DashboardCard(title = "RPM", value = carData.rpm.toString(), onClick = {
-
-                    navController.navigate(Destinations.DETAIL)
-                })
+        is HomeUiState.Loading -> {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = 50.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator()
+                Text("Data Fetching...")
             }
         }
 
-//        DashboardCard(
-//            title = "Car Speed", value = "68 km/h", onClick = {
-//
-//                navController.navigate(Destinations.DETAIL)
-//            })
-//
-//
-//        DashboardCard(
-//            title = "Engine Temperature", value = "89°C", onClick = {
-//
-//                navController.navigate(Destinations.DETAIL)
-//            })
+        is HomeUiState.Success -> {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = 50.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp)
+                        .background(Color.Transparent)
+                        .padding(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text(
+                            text = "Car Dashboard",
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                    item {
+                        DashboardCard(
+                            title = "Fuel Level",
+                            value = "${homeUiState.data.fuelLevel} %",
+                            onClick = {
+                                navController.navigate(Destinations.DETAIL)
+                            })
+                    }
+                    item {
+                        DashboardCard(
+                            title = "Speed",
+                            value = "${homeUiState.data.speed.toString()} km/h",
+                            onClick = {
+                                navController.navigate(Destinations.DETAIL)
+                            })
+                    }
+                    item {
+                        DashboardCard(
+                            title = "Engine Temp",
+                            value = "${homeUiState.data.temperature.toString()} °C",
+                            onClick = {
+
+                                navController.navigate(Destinations.DETAIL)
+                            })
+                    }
+                    item {
+                        DashboardCard(
+                            title = "RPM", value = homeUiState.data.rpm.toString(), onClick = {
+
+                                navController.navigate(Destinations.DETAIL)
+                            })
+                    }
+                }
+            }
+        }
+
+        is HomeUiState.Error -> {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = 50.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = homeUiState.message)
+            }
+        }
+
     }
+
+
 }
 
 
