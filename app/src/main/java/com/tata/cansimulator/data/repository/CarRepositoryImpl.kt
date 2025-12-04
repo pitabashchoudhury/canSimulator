@@ -2,8 +2,13 @@ package com.tata.cansimulator.data.repository
 
 
 
+import android.content.Context
+import android.util.Log
 import com.tata.cansimulator.core.utils.NetworkChecker
+import com.tata.cansimulator.receiver.CarStatusReceiverManager
 import com.tata.cansimulator.ui.home.model.CarStatus
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
@@ -11,6 +16,8 @@ class CarRepositoryImpl @Inject constructor(
 //    private val api: CarApi,
 //    private val dao: CarDao,
     private val networkChecker: NetworkChecker,
+    @ApplicationContext private val context: Context,
+    private val receiverManager: CarStatusReceiverManager,
 ) : CarRepository {
 
     override suspend fun getCarStatus(): CarStatus {
@@ -41,5 +48,12 @@ class CarRepositoryImpl @Inject constructor(
         }
 
 
+    }
+
+    override fun observeCarStatus(): Flow<CarStatus> {
+
+        Log.d("CarRepositoryImpl", receiverManager.flow.value.fuelLevel.toString())
+
+        return receiverManager.flow
     }
 }

@@ -5,12 +5,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tata.cansimulator.data.repository.CarRepository
-import com.tata.cansimulator.ui.home.model.CarStatus
 import com.tata.cansimulator.ui.home.state.HomeUiState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,6 +19,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val repository: CarRepository,
 ) : ViewModel() {
+
+    private  val pp= repository.observeCarStatus().map { it }
 
     private val _homeUiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
     val homeUiState = _homeUiState.asStateFlow()
