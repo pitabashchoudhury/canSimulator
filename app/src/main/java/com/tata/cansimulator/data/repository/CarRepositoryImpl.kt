@@ -1,7 +1,6 @@
 package com.tata.cansimulator.data.repository
 
 
-
 import android.content.Context
 import android.util.Log
 import com.tata.cansimulator.core.utils.NetworkChecker
@@ -31,10 +30,7 @@ class CarRepositoryImpl @Inject constructor(
 //
 //            response.toDomain()
             CarStatus(
-                speed = 200,
-                fuelLevel = 80,
-                rpm = 2000,
-                temperature = 100
+                speed = 200, fuelLevel = 80, rpm = 2000, temperature = 100
             );
 
         } else {
@@ -51,9 +47,8 @@ class CarRepositoryImpl @Inject constructor(
     }
 
     override fun observeCarStatus(): Flow<CarStatus> {
-
-        Log.d("CarRepositoryImpl", receiverManager.flow.value.fuelLevel.toString())
-
         return receiverManager.flow
     }
+
+
 }

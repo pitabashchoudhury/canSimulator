@@ -70,22 +70,22 @@ class CarStatusService : Service() {
         }
     }
 
-    // 🔥 Builds initial minimal notification
+    //  Builds initial minimal notification
     private fun buildNotification(text: String) =
         NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("CAN Simulator")
+            .setContentTitle("Vehicle Status")
             .setContentText(text)
             .setSmallIcon(android.R.drawable.ic_menu_info_details)
             .setOngoing(true)
             .build()
 
-    // 🔥 Updates notification with CAN data
+    //  Updates notification with CAN data
     private fun updateNotification(status: CarStatus) {
 
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         val newNotification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("CAN Simulator")
+            .setContentTitle("Vehicle Status")
             .setContentText(
                 "Fuel: ${status.fuelLevel}% | Speed: ${status.speed} km/h | RPM: ${status.rpm}"
             )

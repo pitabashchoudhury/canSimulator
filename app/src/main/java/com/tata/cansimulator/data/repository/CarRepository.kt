@@ -4,5 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CarRepository {
     suspend fun getCarStatus(): CarStatus
+
     fun observeCarStatus(): Flow<CarStatus>
+
 }
