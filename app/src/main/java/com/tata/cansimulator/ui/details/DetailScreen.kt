@@ -36,7 +36,7 @@ fun DetailScreen() {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(detailVM.message.collectAsState().value)
         Button(onClick = {
-            homeViewModel.updateText("46")
+
         }) {
             Text("press")
         }
